@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { createRef, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './App.css';
 
@@ -109,7 +109,6 @@ function Arboles() {
       setLlaves(nuevos);
     }
   }
-  console.log(llaves);
 
   /*
   \Entradas: Recibe la dimension (dim) necesaria para realizar una tabla cuadrada.
@@ -134,14 +133,14 @@ function Arboles() {
             let valorRed = parseFloat(((llavesOrdenadas[i][1])/sumaTotal).toFixed(4))
             fila[j] = valorRed;
         }else{
-            fila[j] = null;
+            fila[j] = 0;
         }
       }
       tablaInicial[i] = fila;
     }
-    setDatos(tablaInicial);
-    setCalc(true);
-    console.log(tablaInicial);
+    //setDatos(tablaInicial);
+    //setCalc(true);
+    //console.log(tablaInicial);
     return tablaInicial;
   }
 
@@ -151,15 +150,47 @@ function Arboles() {
   \Restricciones: Todos los valores necesarios para realizar el cálculo fueron introducidos.
   */
   const calcularTabla = () => {
-      let tablaInicial = crearInicio();
-      let fila = 0;
-      let columna = 2;
-      while(columna!=cantidad && fila!=1){
-        while(columna!=cantidad+1){
-            
-        }
-
+    let tablaInicial = crearInicio();
+    const auxiliar = tablaInicial.map(fila => [...fila]);
+    for (let i = 2; i < cantidad+1; i++) {
+      let x = 0;
+      let y = i;
+      while (x < cantidad+1 && y < cantidad+1) {
+          let sumaP = obtenerP(tablaInicial, x, y);
+          let valores = calculo(tablaInicial, x+1, y, sumaP);
+          tablaInicial[x][y]=valores[0];
+          auxiliar[x][y]=valores[1];
+          x++;
+          y++;
       }
+    }
+    setDatos(tablaInicial);
+    setCalc(true);
+  }
+
+  const obtenerP = (tabla, inicio, fin) => {
+    let resultado = 0;
+    for(let i = inicio; i<fin; i++){
+      resultado += tabla[i][i+1];
+    }
+    return resultado;
+  }
+
+  const calculo = (tablaActual, kMin, kMax, p) => {
+    let lista = [];
+    let auxiliar = [];
+    for(let i = kMin; i<=kMax; i++){
+      let valor1 = tablaActual[kMin-1][i-1];
+      let valor2 = tablaActual[i][kMax];
+      let actual = valor1 + valor2 + p;
+      let valorRed = parseFloat(actual.toFixed(4))
+      lista.push(valorRed);
+      auxiliar.push(i);
+    }
+    let min = minimo(lista);
+    let minAux = lista.indexOf(min);
+    let resultado = [min, minAux];
+    return resultado;
   }
 
   const minimo = (valores) => {
@@ -218,7 +249,7 @@ function Arboles() {
         ))}
       </div>
 
-      <button onClick={crearInicio}>Calcular</button>
+      <button onClick={calcularTabla}>Calcular</button>
     </div>
     );
   }
@@ -270,7 +301,7 @@ function Arboles() {
         ))}
       </div>
 
-    <button onClick={crearInicio}>Calcular</button>
+    <button onClick={calcularTabla}>Calcular</button>
     <h3>Tabla</h3>
     <div className="table-container">
       <table className="table">

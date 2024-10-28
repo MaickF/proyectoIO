@@ -89,7 +89,7 @@ function SeriesDeportivas() {
     if (value === '') {
       setEquipoA_L('');
     } else {
-      let valorA = (parseInt(value, 10));
+      let valorA = (parseFloat(value, 10));
       let valorB = 100 - valorA;
       setEquipoA_L(valorA);
       setEquipoB_V(valorB);
@@ -106,7 +106,7 @@ function SeriesDeportivas() {
     if (value === '') {
       setEquipoA_V('');
     } else {
-      let valorA = (parseInt(value, 10));
+      let valorA = (parseFloat(value, 10));
       let valorB = 100 - valorA;
       setEquipoA_V(valorA);
       setEquipoB_L(valorB);
